@@ -1,11 +1,24 @@
-# Pen Plotter Image t Gcode v2
-This is a fork of the awesome work of: https://github.com/Scott-Cooper/Drawbot_image_to_gcode_v2
+# Pen Plotter Image to Gcode v2
+This is a fork of the awesome work of: [Drawbot_image_to_gcode_v2](https://github.com/Scott-Cooper/Drawbot_image_to_gcode_v2) /
+## Main Differences
+It's configured to be used with a cartesian plotter instead of polar.    
+As is, it's compatible with Grbl servo 0.9i, [link](https://github.com/robottini/grbl-servo), 'M03 S50' (50 for e.g it can be 0 to 255) to go down with the pen, and 'M05' to go up. The commands can be configured in the "Gcode.pde" file.    
+I have tested it on a CNC Shield( keyes clone ) for arduino Nano, a4899 drivers and SG90 servo.    
+Processing 3 it's needed to run the code.(3.5.4 tested)    
 
-It's configured to be used with a cartesian plotter instead of polar
-As is, it's compatible with Grbl servo 0.9i,![link](https://github.com/robottini/grbl-servo)  , M03 Sxx to go down with the pen, and M05 to go up
-I have tested it on a CNC Shield( keyes clone ) for arduino Nano, a4899 drivers and SG90 servo
-TODO: Fix bug on the test gcode file, it's a few mm shifted.
+### Export ENV VAR
+```bash
+export _JAVA_OPTIONS="-Djogl.disable.openglcore=false"
+```
+### Running inside VS Code
+[Plugin](https://github.com/AvinZarlez/processing-vscode)
+``` bash
+export PATH=home/box/Proyects/plotter/Processing/processing-3.5.4/processing-java:$PATH
+```
 
+TODO: Fix bug on the test gcode file, it's a few mm shifted.  
+
+# Instructions
 <img src="pics/github1.png" height="411" alt="Drawbot_image_to_gcode_v2 example output"/>
 
 This code is used to generate gcode for drawbots, polargraphs or other vertical drawing machines. \
