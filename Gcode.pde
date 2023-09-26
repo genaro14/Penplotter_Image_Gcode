@@ -6,12 +6,13 @@
 void gcode_header() {
   OUTPUT.println("G21");
   OUTPUT.println("G90");
-  OUTPUT.println("G1 Z0");
+  OUTPUT.println("G1 F1500");
+  OUTPUT.println("G1 M05");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 void gcode_trailer() {
-  OUTPUT.println("G1 Z0");
+  OUTPUT.println("G1 M05");
   OUTPUT.println("G1 X" + gcode_format(0.1) + " Y" + gcode_format(0.1));
   OUTPUT.println("G1 X0 y0");
 }
@@ -72,7 +73,7 @@ void create_gcode_files (int line_count) {
     lines_drawn = 0;
     x = 0;
     y = 0;
-    String gname = "gcode\\gcode_" + basefile_selected + "_pen" + p + "_" + copic_sets[current_copic_set][p] + ".txt";
+    String gname = "/gcode/gcode_" + basefile_selected + "_pen" + p + "_" + copic_sets[current_copic_set][p] + ".gcode";
     OUTPUT = createWriter(sketchPath("") + gname);
     OUTPUT.println(gcode_comments);
     gcode_header();
@@ -88,10 +89,10 @@ void create_gcode_files (int line_count) {
  
         if (x != gcode_scaled_x1 || y != gcode_scaled_y1) {
           // Oh crap, where the line starts is not where I am, pick up the pen and move there.
-          OUTPUT.println("G1 Z0");
+          OUTPUT.println("G1 M05");
           is_pen_down = false;
           distance = sqrt( sq(abs(x - gcode_scaled_x1)) + sq(abs(y - gcode_scaled_y1)) );
-          String buf = "G1 X" + gcode_format(gcode_scaled_x1) + " Y" + gcode_format(gcode_scaled_y1);
+          String buf = "G1 X" + gcode_format(gcode_scaled_x1) + " Y" + gcode_format(-gcode_scaled_y1);
           OUTPUT.println(buf);
           x = gcode_scaled_x1;
           y = gcode_scaled_y1;
@@ -101,21 +102,21 @@ void create_gcode_files (int line_count) {
         
         if (d1.lines[i].pen_down) {
           if (is_pen_down == false) {
-            OUTPUT.println("G1 Z1");
+            OUTPUT.println("G1 M03 S50");
             is_pen_down = true;
           }
           pen_drawing = pen_drawing + distance;
           lines_drawn++;
         } else {
           if (is_pen_down == true) {
-            OUTPUT.println("G1 Z0");
+            OUTPUT.println("G1 M05");
             is_pen_down = false;
             pen_movement = pen_movement + distance;
             pen_lifts++;
           }
         }
         
-        String buf = "G1 X" + gcode_format(gcode_scaled_x2) + " Y" + gcode_format(gcode_scaled_y2);
+        String buf = "G1 X" + gcode_format(gcode_scaled_x2) + " Y" + gcode_format(-gcode_scaled_y2);
         OUTPUT.println(buf);
         x = gcode_scaled_x2;
         y = gcode_scaled_y2;
@@ -138,44 +139,44 @@ void create_gcode_files (int line_count) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 void create_gcode_test_file () {
   // The dx.min are already scaled to gcode.
-  float test_length = 25.4 * 2;
+  float test_length = 50;
   
-  String gname = "gcode\\gcode_" + basefile_selected + "_test.txt";
+  String gname = "/gcode/gcode_" + basefile_selected + "_test.gcode";
   OUTPUT = createWriter(sketchPath("") + gname);
   OUTPUT.println("(This is a test file to draw the extreams of the drawing area.)");
   OUTPUT.println("(Draws a 2 inch mark on all four corners of the paper.)");
   OUTPUT.println("(WARNING:  pen will be down.)");
   OUTPUT.println("(Extreams of X: " + dx.min + " thru " + dx.max + ")");
   OUTPUT.println("(Extreams of Y: " + dy.min + " thru " + dy.max + ")");
+  OUTPUT.println("G1 F1500");
   gcode_header();
-  
   OUTPUT.println("(Upper left)");
-  OUTPUT.println("G1 X" + gcode_format(dx.min) + " Y" + gcode_format(dy.min + test_length));
-  OUTPUT.println("G1 Z1");
-  OUTPUT.println("G1 X" + gcode_format(dx.min) + " Y" + gcode_format(dy.min));
-  OUTPUT.println("G1 X" + gcode_format(dx.min + test_length) + " Y" + gcode_format(dy.min));
-  OUTPUT.println("G1 Z0");
+  OUTPUT.println("G1 X" + gcode_format(dx.min) + " Y" + gcode_format(-dy.min - test_length));
+  OUTPUT.println("G1 M03 S50");
+  OUTPUT.println("G1 X" + gcode_format(dx.min) + " Y" + gcode_format(-dy.min));
+  OUTPUT.println("G1 X" + gcode_format(dx.min + test_length) + " Y" + gcode_format(-dy.min));
+  OUTPUT.println("G1 M05");
 
   OUTPUT.println("(Upper right)");
-  OUTPUT.println("G1 X" + gcode_format(dx.max - test_length) + " Y" + gcode_format(dy.min));
-  OUTPUT.println("G1 Z1");
-  OUTPUT.println("G1 X" + gcode_format(dx.max) + " Y" + gcode_format(dy.min));
-  OUTPUT.println("G1 X" + gcode_format(dx.max) + " Y" + gcode_format(dy.min + test_length));
-  OUTPUT.println("G1 Z0");
+  OUTPUT.println("G1 X" + gcode_format(dx.max - test_length) + " Y" + gcode_format(-dy.min));
+  OUTPUT.println("G1 M03 S50");
+  OUTPUT.println("G1 X" + gcode_format(dx.max) + " Y" + gcode_format(-dy.min));
+  OUTPUT.println("G1 X" + gcode_format(dx.max) + " Y" + gcode_format(-dy.min - test_length));
+  OUTPUT.println("G1 M05");
 
   OUTPUT.println("(Lower right)");
-  OUTPUT.println("G1 X" + gcode_format(dx.max) + " Y" + gcode_format(dy.max - test_length));
-  OUTPUT.println("G1 Z1");
-  OUTPUT.println("G1 X" + gcode_format(dx.max) + " Y" + gcode_format(dy.max));
-  OUTPUT.println("G1 X" + gcode_format(dx.max - test_length) + " Y" + gcode_format(dy.max));
-  OUTPUT.println("G1 Z0");
+  OUTPUT.println("G1 X" + gcode_format(dx.max) + " Y" + gcode_format(dy.max + test_length));
+  OUTPUT.println("G1 M03 S50");
+  OUTPUT.println("G1 X" + gcode_format(dx.max) + " Y" + gcode_format(abs(dy.max)));
+  OUTPUT.println("G1 X" + gcode_format(dx.max - test_length) + " Y" + gcode_format(abs(dy.max)));
+  OUTPUT.println("G1 M05");
 
   OUTPUT.println("(Lower left)");
-  OUTPUT.println("G1 X" + gcode_format(dx.min + test_length) + " Y" + gcode_format(dy.max));
-  OUTPUT.println("G1 Z1");
-  OUTPUT.println("G1 X" + gcode_format(dx.min) + " Y" + gcode_format(dy.max));
-  OUTPUT.println("G1 X" + gcode_format(dx.min) + " Y" + gcode_format(dy.max - test_length));
-  OUTPUT.println("G1 Z0");
+  OUTPUT.println("G1 X" + gcode_format(dx.min + test_length) + " Y" + gcode_format(abs(dy.max)));
+  OUTPUT.println("G1 M03 S50");
+  OUTPUT.println("G1 X" + gcode_format(dx.min) + " Y" + gcode_format(abs(dy.max)));
+  OUTPUT.println("G1 X" + gcode_format(dx.min) + " Y" + gcode_format(dy.max + test_length));
+  OUTPUT.println("G1 M05");
 
   gcode_trailer();
   OUTPUT.flush();
@@ -202,7 +203,7 @@ void create_svg_file (int line_count) {
   // Inkscape versions before 0.91 used 90dpi, Today most software assumes 96dpi.
   float svgdpi = 96.0 / 25.4;
   
-  String gname = "gcode\\gcode_" + basefile_selected + ".svg";
+  String gname = "gcode/gcode_" + basefile_selected + ".svg";
   OUTPUT = createWriter(sketchPath("") + gname);
   OUTPUT.println("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
   OUTPUT.println("<svg width=\"" + svg_format(img.width * gcode_scale) + "mm\" height=\"" + svg_format(img.height * gcode_scale) + "mm\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">");

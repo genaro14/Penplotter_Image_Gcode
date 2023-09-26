@@ -56,7 +56,7 @@ void save_jpg() {
   img_drawing = loadImage("tmptif.tif");
   img_drawing2 = createImage(img.width, img.height, RGB);
   img_drawing2.copy(img_drawing, 0, 0, img.width, img.height, 0, 0, img.width, img.height);
-  img_drawing2.save("gcode\\gcode_" + basefile_selected + ".jpg");
+  img_drawing2.save("gcode/gcode_" + basefile_selected + ".jpg");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////

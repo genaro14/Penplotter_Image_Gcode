@@ -36,7 +36,7 @@ class botDrawing {
   }
 
   void render_to_pdf (int line_count) {
-    String pdfname = "gcode\\gcode_" + basefile_selected + ".pdf";
+    String pdfname = "gcode/gcode_" + basefile_selected + ".pdf";
     PGraphics pdf = createGraphics(img.width, img.height, PDF, pdfname);
     pdf.beginDraw();
     pdf.background(255, 255, 255);
@@ -54,7 +54,7 @@ class botDrawing {
 
   void render_each_pen_to_pdf (int line_count) {
     for (int p=0; p<=pen_count-1; p++) {
-      String pdfname = "gcode\\gcode_" + basefile_selected + "_pen" + p + "_" + copic_sets[current_copic_set][p] + ".pdf";
+      String pdfname = "gcode/gcode_" + basefile_selected + "_pen" + p + "_" + copic_sets[current_copic_set][p] + ".pdf";
       PGraphics pdf = createGraphics(img.width, img.height, PDF, pdfname);
       pdf.beginDraw();
       pdf.background(255, 255, 255);
