@@ -1,4 +1,11 @@
-# Drawbot_image_to_gcode_v2
+# Pen Plotter Image t Gcode v2
+This is a fork of the awesome work of: https://github.com/Scott-Cooper/Drawbot_image_to_gcode_v2
+
+It's configured to be used with a cartesian plotter instead of polar
+As is, it's compatible with Grbl servo 0.9i,![link](https://github.com/robottini/grbl-servo)  , M03 Sxx to go down with the pen, and M05 to go up
+I have tested it on a CNC Shield( keyes clone ) for arduino Nano, a4899 drivers and SG90 servo
+TODO: Fix bug on the test gcode file, it's a few mm shifted.
+
 <img src="pics/github1.png" height="411" alt="Drawbot_image_to_gcode_v2 example output"/>
 
 This code is used to generate gcode for drawbots, polargraphs or other vertical drawing machines. \
