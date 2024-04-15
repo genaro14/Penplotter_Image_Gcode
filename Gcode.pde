@@ -102,7 +102,7 @@ void create_gcode_files (int line_count) {
         
         if (d1.lines[i].pen_down) {
           if (is_pen_down == false) {
-            OUTPUT.println("G1 M03 S50");
+            OUTPUT.println("G1 M03 S25");
             is_pen_down = true;
           }
           pen_drawing = pen_drawing + distance;
@@ -152,28 +152,28 @@ void create_gcode_test_file () {
   gcode_header();
   OUTPUT.println("(Upper left)");
   OUTPUT.println("G1 X" + gcode_format(dx.min) + " Y" + gcode_format(-dy.min - test_length));
-  OUTPUT.println("G1 M03 S50");
+  OUTPUT.println("G1 M03 S25");
   OUTPUT.println("G1 X" + gcode_format(dx.min) + " Y" + gcode_format(-dy.min));
   OUTPUT.println("G1 X" + gcode_format(dx.min + test_length) + " Y" + gcode_format(-dy.min));
   OUTPUT.println("G1 M05");
 
   OUTPUT.println("(Upper right)");
   OUTPUT.println("G1 X" + gcode_format(dx.max - test_length) + " Y" + gcode_format(-dy.min));
-  OUTPUT.println("G1 M03 S50");
+  OUTPUT.println("G1 M03 S25");
   OUTPUT.println("G1 X" + gcode_format(dx.max) + " Y" + gcode_format(-dy.min));
   OUTPUT.println("G1 X" + gcode_format(dx.max) + " Y" + gcode_format(-dy.min - test_length));
   OUTPUT.println("G1 M05");
 
   OUTPUT.println("(Lower right)");
   OUTPUT.println("G1 X" + gcode_format(dx.max) + " Y" + gcode_format(dy.max + test_length));
-  OUTPUT.println("G1 M03 S50");
+  OUTPUT.println("G1 M03 S25");
   OUTPUT.println("G1 X" + gcode_format(dx.max) + " Y" + gcode_format(abs(dy.max)));
   OUTPUT.println("G1 X" + gcode_format(dx.max - test_length) + " Y" + gcode_format(abs(dy.max)));
   OUTPUT.println("G1 M05");
 
   OUTPUT.println("(Lower left)");
   OUTPUT.println("G1 X" + gcode_format(dx.min + test_length) + " Y" + gcode_format(abs(dy.max)));
-  OUTPUT.println("G1 M03 S50");
+  OUTPUT.println("G1 M03 S25");
   OUTPUT.println("G1 X" + gcode_format(dx.min) + " Y" + gcode_format(abs(dy.max)));
   OUTPUT.println("G1 X" + gcode_format(dx.min) + " Y" + gcode_format(dy.max + test_length));
   OUTPUT.println("G1 M05");
