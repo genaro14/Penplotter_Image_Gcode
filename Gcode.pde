@@ -86,7 +86,7 @@ void create_gcode_files (int line_count) {
         float gcode_scaled_x2 = d1.lines[i].x2 * gcode_scale + gcode_offset_x;
         float gcode_scaled_y2 = d1.lines[i].y2 * gcode_scale + gcode_offset_y;
         distance = sqrt( sq(abs(gcode_scaled_x1 - gcode_scaled_x2)) + sq(abs(gcode_scaled_y1 - gcode_scaled_y2)) );
- 
+        println("LIMIT:  " + gcode_scaled_x2);
         if (x != gcode_scaled_x1 || y != gcode_scaled_y1) {
           // Oh crap, where the line starts is not where I am, pick up the pen and move there.
           OUTPUT.println("G1 M05");
@@ -102,7 +102,7 @@ void create_gcode_files (int line_count) {
         
         if (d1.lines[i].pen_down) {
           if (is_pen_down == false) {
-            OUTPUT.println("G1 M03 S25");
+            OUTPUT.println("G1 M03 S30");
             is_pen_down = true;
           }
           pen_drawing = pen_drawing + distance;
@@ -126,6 +126,7 @@ void create_gcode_files (int line_count) {
     }
     
     gcode_trailer();
+    
     OUTPUT.println("(Drew " + lines_drawn + " lines for " + pen_drawing  / 25.4 / 12 + " feet)");
     OUTPUT.println("(Pen was lifted " + pen_lifts + " times for " + pen_movement  / 25.4 / 12 + " feet)");
     OUTPUT.println("(Extreams of X: " + dx.min + " thru " + dx.max + ")");
@@ -152,28 +153,28 @@ void create_gcode_test_file () {
   gcode_header();
   OUTPUT.println("(Upper left)");
   OUTPUT.println("G1 X" + gcode_format(dx.min) + " Y" + gcode_format(-dy.min - test_length));
-  OUTPUT.println("G1 M03 S25");
+  OUTPUT.println("G1 M03 S30");
   OUTPUT.println("G1 X" + gcode_format(dx.min) + " Y" + gcode_format(-dy.min));
   OUTPUT.println("G1 X" + gcode_format(dx.min + test_length) + " Y" + gcode_format(-dy.min));
   OUTPUT.println("G1 M05");
 
   OUTPUT.println("(Upper right)");
   OUTPUT.println("G1 X" + gcode_format(dx.max - test_length) + " Y" + gcode_format(-dy.min));
-  OUTPUT.println("G1 M03 S25");
+  OUTPUT.println("G1 M03 S30");
   OUTPUT.println("G1 X" + gcode_format(dx.max) + " Y" + gcode_format(-dy.min));
   OUTPUT.println("G1 X" + gcode_format(dx.max) + " Y" + gcode_format(-dy.min - test_length));
   OUTPUT.println("G1 M05");
 
   OUTPUT.println("(Lower right)");
   OUTPUT.println("G1 X" + gcode_format(dx.max) + " Y" + gcode_format(dy.max + test_length));
-  OUTPUT.println("G1 M03 S25");
+  OUTPUT.println("G1 M03 S30");
   OUTPUT.println("G1 X" + gcode_format(dx.max) + " Y" + gcode_format(abs(dy.max)));
   OUTPUT.println("G1 X" + gcode_format(dx.max - test_length) + " Y" + gcode_format(abs(dy.max)));
   OUTPUT.println("G1 M05");
 
   OUTPUT.println("(Lower left)");
   OUTPUT.println("G1 X" + gcode_format(dx.min + test_length) + " Y" + gcode_format(abs(dy.max)));
-  OUTPUT.println("G1 M03 S25");
+  OUTPUT.println("G1 M03 S30");
   OUTPUT.println("G1 X" + gcode_format(dx.min) + " Y" + gcode_format(abs(dy.max)));
   OUTPUT.println("G1 X" + gcode_format(dx.min) + " Y" + gcode_format(dy.max + test_length));
   OUTPUT.println("G1 M05");
@@ -217,15 +218,15 @@ void create_svg_file (int line_count) {
       if (d1.lines[i].pen_number == p) {
 
         // Do we add gcode_offsets needed by my bot, or zero based?
-        //float gcode_scaled_x1 = d1.lines[i].x1 * gcode_scale * svgdpi + gcode_offset_x;
-        //float gcode_scaled_y1 = d1.lines[i].y1 * gcode_scale * svgdpi + gcode_offset_y;
-        //float gcode_scaled_x2 = d1.lines[i].x2 * gcode_scale * svgdpi + gcode_offset_x;
-        //float gcode_scaled_y2 = d1.lines[i].y2 * gcode_scale * svgdpi + gcode_offset_y;
+        float gcode_scaled_x1 = d1.lines[i].x1 * gcode_scale * svgdpi + gcode_offset_x;
+        float gcode_scaled_y1 = d1.lines[i].y1 * gcode_scale * svgdpi + gcode_offset_y;
+        float gcode_scaled_x2 = d1.lines[i].x2 * gcode_scale * svgdpi + gcode_offset_x;
+        float gcode_scaled_y2 = d1.lines[i].y2 * gcode_scale * svgdpi + gcode_offset_y;
         
-        float gcode_scaled_x1 = d1.lines[i].x1 * gcode_scale * svgdpi;
-        float gcode_scaled_y1 = d1.lines[i].y1 * gcode_scale * svgdpi;
-        float gcode_scaled_x2 = d1.lines[i].x2 * gcode_scale * svgdpi;
-        float gcode_scaled_y2 = d1.lines[i].y2 * gcode_scale * svgdpi;
+        // float gcode_scaled_x1 = d1.lines[i].x1 * gcode_scale * svgdpi;
+        // float gcode_scaled_y1 = d1.lines[i].y1 * gcode_scale * svgdpi;
+        // float gcode_scaled_x2 = d1.lines[i].x2 * gcode_scale * svgdpi;
+        // float gcode_scaled_y2 = d1.lines[i].y2 * gcode_scale * svgdpi;
 
         if (d1.lines[i].pen_continuation == false && drawing_polyline) {
           OUTPUT.println("\" />");
@@ -257,6 +258,7 @@ void create_svg_file (int line_count) {
   OUTPUT.flush();
   OUTPUT.close();
   println("SVG created:  " + gname);
+  
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////

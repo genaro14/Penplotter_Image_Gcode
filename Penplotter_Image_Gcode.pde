@@ -18,9 +18,9 @@ import processing.pdf.*;
 // Constants 
 final float   paper_size_x = 210;
 final float   paper_size_y = 297;
-final float   image_size_x = 200;
-final float   image_size_y = 277;
-final float   paper_top_to_origin = 0;      //mm, make smaller to move drawing down on paper
+final float   image_size_x = 190;
+final float   image_size_y = 287;
+final float   paper_top_to_origin = 287;      //mm, make smaller to move drawing down on paper
 final float   pen_width = 0.45;               //mm, determines image_scale, reduce, if solid black areas are speckled with white holes.
 final int     pen_count = 1;
 final char    gcode_decimal_seperator = '.';    
@@ -100,7 +100,7 @@ void setup() {
   size(1415, 900, P3D);
   frame.setLocation(200, 200);
   surface.setResizable(true);
-  surface.setTitle("Drawbot_image_to_gcode_v2, version 3.75");
+  surface.setTitle("Penplotter_image_to_gcode_v2, version 1.00");
   colorMode(RGB);
   frameRate(999);
   //randomSeed(millis());
@@ -219,15 +219,14 @@ void setup_squiggles() {
   gcode_scale_y = image_size_y / img.height;
   gcode_scale = min(gcode_scale_x, gcode_scale_y);
   // gcode_offset_x = - (img.width * gcode_scale / 2.0);  
-  // gcode_offset_y = - (paper_top_to_origin - (paper_size_y - (img.height * gcode_scale)) / 2.0);
-  gcode_offset_x = 5;  
-  gcode_offset_y = -287;
+  gcode_offset_y = - (paper_top_to_origin - (paper_size_y - (img.height * gcode_scale)) + 15);
+  gcode_offset_x = 7.5;  
   screen_scale_x = width / (float)img.width;
   screen_scale_y = height / (float)img.height;
   screen_scale = min(screen_scale_x, screen_scale_y);
   screen_scale_org = screen_scale;
   
-  gcode_comment("final dimensions: " + img.width + " by " + img.height);
+  gcode_comment("final dimensions: " + img.width * gcode_scale + " by " + img.height * gcode_scale);
   gcode_comment("paper_size: " + nf(paper_size_x,0,2) + " by " + nf(paper_size_y,0,2) + "      " + nf(paper_size_x/25.4,0,2) + " by " + nf(paper_size_y/25.4,0,2));
   gcode_comment("drawing size max: " + nf(image_size_x,0,2) + " by " + nf(image_size_y,0,2) + "      " + nf(image_size_x/25.4,0,2) + " by " + nf(image_size_y/25.4,0,2));
   gcode_comment("drawing size calculated " + nf(img.width * gcode_scale,0,2) + " by " + nf(img.height * gcode_scale,0,2) + "      " + nf(img.width * gcode_scale/25.4,0,2) + " by " + nf(img.height * gcode_scale/25.4,0,2));
@@ -244,6 +243,8 @@ void setup_squiggles() {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 void render_all() {
+  println("-------------------------- DX.MIN: " + dx.min + "DX.MAX: " + dx.max);
+  println("-------------------------- DY.MIN: " + dy.min + "DY.MAX: " + dy.max);
   println("render_all: " + display_mode + ", " + display_line_count + " lines, with pen set " + current_copic_set);
   
   if (display_mode == "drawing") {
