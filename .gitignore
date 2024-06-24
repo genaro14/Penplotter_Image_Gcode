@@ -1,5 +1,7 @@
 node_modules
 **/.DS_Store
 .DS_Store
-gcode/*
+gcode/*.gcode
+gcode/*.svg
+gcode/*.pdf
 
